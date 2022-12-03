@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import com.jdkclean.jdkcommerce.dto.CategoryDTO;
 import com.jdkclean.jdkcommerce.entities.Category;
 import com.jdkclean.jdkcommerce.repositories.CategoryRepository;
 import com.jdkclean.jdkcommerce.services.exceptions.ControllerNotFoundException;
+import com.jdkclean.jdkcommerce.services.exceptions.DatabaseException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -52,6 +55,20 @@ public class CategoryService {
 		}
 		catch (EntityNotFoundException e ) {
 			throw new ControllerNotFoundException("Id não encontrado " + id);
+		}
+		
+	}
+
+	public void delete(Long id) {
+
+		try {
+			repository.deleteById(id);
+		}
+		catch (EmptyResultDataAccessException e) {
+			throw new ControllerNotFoundException("Id não encontrado " + id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Violação de integridade");
 		}
 		
 	}
