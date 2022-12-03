@@ -7,15 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.jdkclean.jdkcommerce.services.exceptions.EntityNotFoundException;
+import com.jdkclean.jdkcommerce.services.exceptions.ControllerNotFoundException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
 
-	@ExceptionHandler(EntityNotFoundException.class)
-	public ResponseEntity<StandardError> entityNotFound(EntityNotFoundException e, HttpServletRequest request) {
+	@ExceptionHandler(ControllerNotFoundException.class)
+	public ResponseEntity<StandardError> entityNotFound(ControllerNotFoundException e, HttpServletRequest request) {
 		
 		StandardError err = new StandardError();
 		err.setTimestamp(Instant.now());
