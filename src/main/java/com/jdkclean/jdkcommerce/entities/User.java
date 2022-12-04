@@ -1,17 +1,22 @@
 package com.jdkclean.jdkcommerce.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tb_client")
-public class Client implements Serializable {
+@Table(name = "tb_user")
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -23,10 +28,16 @@ public class Client implements Serializable {
 	private String email;
 	private String password;
 	
-	public Client() {
+	@ManyToMany
+	@JoinTable(name = "tb_user_role",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+	
+	public User() {
 	}
 
-	public Client(Long id, String firstName, String lastName, String email, String password) {
+	public User(Long id, String firstName, String lastName, String email, String password) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -74,6 +85,10 @@ public class Client implements Serializable {
 		this.password = password;
 	}
 
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -87,7 +102,7 @@ public class Client implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Client other = (Client) obj;
+		User other = (User) obj;
 		return Objects.equals(id, other.id);
 	}
 	
