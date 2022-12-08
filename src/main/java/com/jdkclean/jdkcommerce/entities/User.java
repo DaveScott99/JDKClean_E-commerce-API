@@ -5,7 +5,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -38,15 +42,23 @@ public class User implements Serializable {
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	
+	@OneToMany
+	@JsonIgnore
+	private Set<Cart> carts = new HashSet<>();
+	
+	@Embedded
+	private Address address;
+	
 	public User() {
 	}
 
-	public User(Long id, String firstName, String lastName, String email, String password) {
+	public User(Long id, String firstName, String lastName, String email, String password, Address address) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
+		this.address = address;
 	}
 
 	public Long getId() {
@@ -91,6 +103,18 @@ public class User implements Serializable {
 
 	public Set<Role> getRoles() {
 		return roles;
+	}
+	
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public Set<Cart> getCarts() {
+		return carts;
 	}
 
 	@Override
