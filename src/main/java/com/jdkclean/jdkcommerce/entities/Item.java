@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jdkclean.jdkcommerce.dto.CartDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

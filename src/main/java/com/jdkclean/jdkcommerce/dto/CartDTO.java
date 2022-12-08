@@ -17,7 +17,7 @@ public class CartDTO implements Serializable {
 	private boolean close;
 	
 	private Set<Item> items =  new HashSet<>();
-	
+
 	private FormPayment formPayment;
 	
 	public CartDTO() { 
@@ -32,14 +32,10 @@ public class CartDTO implements Serializable {
 	
 	public CartDTO(Cart entity) {
 		id = entity.getId();
+		entity.getItems().forEach(item -> this.items.add(item));
 		totalValue = entity.getTotalValue();
 		close = entity.isClose();
 		formPayment = entity.getFormPayment();
-	}
-	
-	public CartDTO(Cart entity, Set<Item> items) {
-		this(entity);
-		items.addAll(items);
 	}
 
 	public Long getId() {

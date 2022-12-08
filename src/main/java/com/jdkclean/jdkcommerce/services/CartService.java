@@ -24,35 +24,32 @@ public class CartService {
 
 	@Autowired
 	private CartRepository repository;
-	
+
 	@Autowired
 	private ProductRepository productRepository;
 
-	
 	@Transactional(readOnly = true)
 	public CartDTO findById(Long id) {
 		Optional<Cart> obj = repository.findById(id);
 		Cart entity = obj.orElseThrow(() -> new ControllerNotFoundException("Carrinho não encontrado!"));
 		return new CartDTO(entity);
 	}
-	
-	
+
 	@Transactional
 	public Item addItem(ItemDTO itemDto) {
 		Cart cart = repository.getReferenceById(itemDto.getCartId());
-		
+
 		if (cart.isClose()) {
 			throw new RuntimeException("Esta sacola está fechada.");
 		}
-		
-		Product product = productRepository.findById(itemDto.getProductId()).orElseThrow(
-				() -> new RuntimeException("Produto não encontrado!")
-				);
-		
+
+		Product product = productRepository.findById(itemDto.getProductId())
+				.orElseThrow(() -> new RuntimeException("Produto não encontrado!"));
+
 		Item itemForInsertToCart = new Item(itemDto.getQuantity(), product, cart);
-		
+
 		Set<Item> cartItens = cart.getItems();
-		
+
 		cartItens.add(itemForInsertToCart);
 		
 		List<Double> itemValues = new ArrayList<>();
@@ -60,15 +57,14 @@ public class CartService {
 			Double totalValueItem = cartItem.getProduct().getPrice() * cartItem.getQuantity();
 			itemValues.add(totalValueItem);
 		}
-		
+
 		Double totalValueCart = itemValues.stream().mapToDouble(totalValueItem -> totalValueItem).sum();
-		
 		cart.setTotalValue(totalValueCart);
+
 		repository.save(cart);
 		return itemForInsertToCart;
 	}
-	
-	
+
 	@Transactional
 	public Cart closeCart(Long id, int formPayment) {
 		try {
@@ -80,10 +76,9 @@ public class CartService {
 			cart.setFormPayment(payment);
 			cart.setClose(true);
 			return repository.save(cart);
-		}
-		catch (ControllerNotFoundException e) {
+		} catch (ControllerNotFoundException e) {
 			throw new ControllerNotFoundException("Id do carrinho não encontrado " + id);
 		}
 	}
-	
+
 }
