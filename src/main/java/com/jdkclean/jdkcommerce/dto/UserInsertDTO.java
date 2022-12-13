@@ -1,5 +1,8 @@
 package com.jdkclean.jdkcommerce.dto;
 
+import com.jdkclean.jdkcommerce.services.validation.UserInsertValid;
+
+@UserInsertValid
 public class UserInsertDTO extends UserDTO {
 
 	private static final long serialVersionUID = 1L;

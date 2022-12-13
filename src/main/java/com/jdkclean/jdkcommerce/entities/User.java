@@ -42,8 +42,8 @@ public class User implements Serializable {
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
 	
-	@OneToMany
 	@JsonIgnore
+	@OneToMany(mappedBy = "user")
 	private Set<Cart> carts = new HashSet<>();
 	
 	@Embedded

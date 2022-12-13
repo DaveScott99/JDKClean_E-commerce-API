@@ -14,6 +14,7 @@ import com.jdkclean.jdkcommerce.dto.ItemDTO;
 import com.jdkclean.jdkcommerce.entities.Cart;
 import com.jdkclean.jdkcommerce.entities.Item;
 import com.jdkclean.jdkcommerce.entities.Product;
+import com.jdkclean.jdkcommerce.entities.User;
 import com.jdkclean.jdkcommerce.enums.FormPayment;
 import com.jdkclean.jdkcommerce.repositories.CartRepository;
 import com.jdkclean.jdkcommerce.repositories.ProductRepository;
@@ -33,6 +34,12 @@ public class CartService {
 		Optional<Cart> obj = repository.findById(id);
 		Cart entity = obj.orElseThrow(() -> new ControllerNotFoundException("Carrinho não encontrado!"));
 		return new CartDTO(entity);
+	}
+	
+	public Cart newCart(User user) {
+		Cart cartForUser = new Cart();
+		cartForUser.setUser(user);
+		return repository.save(cartForUser);
 	}
 
 	@Transactional

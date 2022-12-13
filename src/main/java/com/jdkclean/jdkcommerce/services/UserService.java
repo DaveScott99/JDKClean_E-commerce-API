@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jdkclean.jdkcommerce.dto.RoleDTO;
 import com.jdkclean.jdkcommerce.dto.UserDTO;
 import com.jdkclean.jdkcommerce.dto.UserInsertDTO;
+import com.jdkclean.jdkcommerce.entities.Cart;
 import com.jdkclean.jdkcommerce.entities.Role;
 import com.jdkclean.jdkcommerce.entities.User;
+import com.jdkclean.jdkcommerce.repositories.CartRepository;
 import com.jdkclean.jdkcommerce.repositories.RoleRepository;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
 import com.jdkclean.jdkcommerce.services.exceptions.ControllerNotFoundException;
@@ -34,6 +36,9 @@ public class UserService {
 	
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private CartService cartService;
 	
 	@Transactional(readOnly = true)
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
@@ -54,6 +59,7 @@ public class UserService {
 		copyDtoToEntity(dto, entity);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = repository.save(entity);
+		cartService.newCart(entity);
 		return new UserDTO(entity);
 	}
 
