@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.jdkclean.jdkcommerce.services.exceptions.ControllerNotFoundException;
 import com.jdkclean.jdkcommerce.services.exceptions.DatabaseException;
+import com.jdkclean.jdkcommerce.services.exceptions.LoginException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -24,6 +25,18 @@ public class ControllerExceptionHandler {
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Recurso não encontrado");
+		err.setMessage(e.getMessage());
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+	
+	@ExceptionHandler(LoginException.class)
+	public ResponseEntity<StandardError> login(LoginException e, HttpServletRequest request) {
+		HttpStatus status = HttpStatus.FORBIDDEN;
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(status.value());
+		err.setError("Erro de autenticação");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
