@@ -9,7 +9,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.jdkclean.jdkcommerce.controllers.exceptions.FieldMessage;
 import com.jdkclean.jdkcommerce.dto.UserUpdateDTO;
-import com.jdkclean.jdkcommerce.entities.User;
+import com.jdkclean.jdkcommerce.entities.UserEntity;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,9 +39,9 @@ public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid,
 		
 		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
 		
-		User user = userRepository.findByEmail(dto.getEmail());
+		UserEntity user = userRepository.findByUsername(dto.getUsername());
 		if (user != null && userId != user.getId()) {
-			list.add(new FieldMessage("email", "Email já existe"));
+			list.add(new FieldMessage("username", "Username já existe"));
 		}
 		
 		for (FieldMessage e : list) {

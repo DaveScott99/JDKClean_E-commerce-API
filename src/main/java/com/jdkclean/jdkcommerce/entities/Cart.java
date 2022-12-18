@@ -32,7 +32,7 @@ public class Cart implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private User user;
+	private UserEntity user;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Item> items =  new HashSet<>();
@@ -43,7 +43,7 @@ public class Cart implements Serializable {
 	public Cart() {
 	}
 	
-	public Cart(Long id, Double totalValue, boolean close, User user, FormPayment formPayment) {
+	public Cart(Long id, Double totalValue, boolean close, UserEntity user, FormPayment formPayment) {
 		this.id = id;
 		this.totalValue = totalValue;
 		this.close = close;
@@ -75,11 +75,11 @@ public class Cart implements Serializable {
 		this.close = close;
 	}
 
-	public User getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 

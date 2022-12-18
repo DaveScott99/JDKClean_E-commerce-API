@@ -1,6 +1,6 @@
 package com.jdkclean.jdkcommerce.dto;
 
-public class Login {
+public class RegisterDTO {
 
 	private String username;
 	private String password;

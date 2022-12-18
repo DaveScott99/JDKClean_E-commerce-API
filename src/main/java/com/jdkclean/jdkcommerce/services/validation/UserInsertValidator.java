@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jdkclean.jdkcommerce.controllers.exceptions.FieldMessage;
 import com.jdkclean.jdkcommerce.dto.UserInsertDTO;
-import com.jdkclean.jdkcommerce.entities.User;
+import com.jdkclean.jdkcommerce.entities.UserEntity;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
 
 import jakarta.validation.ConstraintValidator;
@@ -29,9 +29,9 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 		
 		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
 		
-		User user = userRepository.findByEmail(dto.getEmail());
+		UserEntity user = userRepository.findByUsername(dto.getUsername());
 		if (user != null) {
-			list.add(new FieldMessage("email", "Email já existe"));
+			list.add(new FieldMessage("username", "Username já existe"));
 		}
 		
 		for (FieldMessage e : list) {

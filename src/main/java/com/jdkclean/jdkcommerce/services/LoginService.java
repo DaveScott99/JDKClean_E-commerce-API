@@ -1,3 +1,4 @@
+/*
 package com.jdkclean.jdkcommerce.services;
 
 import java.util.Date;
@@ -6,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.jdkclean.jdkcommerce.config.security.JWTCreator;
+import com.jdkclean.jdkcommerce.config.security.JWTGenerator;
 import com.jdkclean.jdkcommerce.config.security.JWTObject;
 import com.jdkclean.jdkcommerce.config.security.SecurityConfig;
-import com.jdkclean.jdkcommerce.dto.Login;
+import com.jdkclean.jdkcommerce.dto.LoginDTO;
 import com.jdkclean.jdkcommerce.dto.Session;
+import com.jdkclean.jdkcommerce.dto.UserLoginDTO;
 import com.jdkclean.jdkcommerce.entities.Role;
-import com.jdkclean.jdkcommerce.entities.User;
+import com.jdkclean.jdkcommerce.entities.UserEntity;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
 import com.jdkclean.jdkcommerce.services.exceptions.LoginException;
 
-@Service
 public class LoginService {
 	
 	@Autowired
@@ -25,9 +26,9 @@ public class LoginService {
 	@Autowired
 	private UserRepository repository;
 	
-	public Session login(Login login) {
+	public Session login(LoginDTO login) {
 		
-		User user = repository.findByEmail(login.getUsername());
+		UserEntity user = repository.findByEmail(login.getUsername());
 		
 		if (user != null) {
 			boolean passwordOk = encoder.matches(login.getPassword(), user.getPassword());
@@ -36,8 +37,10 @@ public class LoginService {
 				throw new LoginException("Senha inválida");
 			}
 			
+			UserLoginDTO loginUser = new UserLoginDTO(user);
+			
 			Session session = new Session();
-			session.setLogin(user.getUsername());
+			session.setUser(loginUser);
 
 			JWTObject jwtObject = new JWTObject();
 			jwtObject.setIssuedAt(new Date(System.currentTimeMillis()));
@@ -47,7 +50,7 @@ public class LoginService {
 				jwtObject.getRoles().add(role.getAuthority().toString());
 			}
 
-			session.setToken(JWTCreator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
+			session.setToken(JWTGenerator.create(SecurityConfig.PREFIX, SecurityConfig.KEY, jwtObject));
 			return session;
 		} 
 		else {
@@ -56,3 +59,4 @@ public class LoginService {
 	}
 
 }
+*/

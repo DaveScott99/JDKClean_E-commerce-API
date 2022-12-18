@@ -1,15 +1,11 @@
 package com.jdkclean.jdkcommerce.entities;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,7 +24,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements UserDetails, Serializable {
+public class UserEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -39,14 +35,14 @@ public class User implements UserDetails, Serializable {
 	private String lastName;
 	
 	@Column(unique = true)
-	private String email;
+	private String username;
 	private String password;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_role",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private Set<Role> roles = new HashSet<>();
+	private List<Role> roles = new ArrayList<>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
@@ -55,14 +51,14 @@ public class User implements UserDetails, Serializable {
 	@Embedded
 	private Address address;
 	
-	public User() {
+	public UserEntity() {
 	}
 
-	public User(Long id, String firstName, String lastName, String email, String password, Address address) {
+	public UserEntity(Long id, String firstName, String lastName, String username, String password, Address address) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.email = email;
+		this.username = username;
 		this.password = password;
 		this.address = address;
 	}
@@ -91,12 +87,12 @@ public class User implements UserDetails, Serializable {
 		this.lastName = lastName;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setUsername(String email) {
+		this.username = email;
 	}
 
 	public String getPassword() {
@@ -107,7 +103,7 @@ public class User implements UserDetails, Serializable {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 	
@@ -136,39 +132,8 @@ public class User implements UserDetails, Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		UserEntity other = (UserEntity) obj;
 		return Objects.equals(id, other.id);
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-				.collect(Collectors.toList());
-	}
-
-	@Override
-	public String getUsername() {
-		return email;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
 	}
 	
 }

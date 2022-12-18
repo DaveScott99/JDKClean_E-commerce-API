@@ -2,16 +2,11 @@ package com.jdkclean.jdkcommerce.services;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +16,7 @@ import com.jdkclean.jdkcommerce.dto.UserDTO;
 import com.jdkclean.jdkcommerce.dto.UserInsertDTO;
 import com.jdkclean.jdkcommerce.dto.UserUpdateDTO;
 import com.jdkclean.jdkcommerce.entities.Role;
-import com.jdkclean.jdkcommerce.entities.User;
+import com.jdkclean.jdkcommerce.entities.UserEntity;
 import com.jdkclean.jdkcommerce.repositories.RoleRepository;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
 import com.jdkclean.jdkcommerce.services.exceptions.ControllerNotFoundException;
@@ -30,9 +25,7 @@ import com.jdkclean.jdkcommerce.services.exceptions.DatabaseException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class UserService implements UserDetailsService {
-
-	private static Logger logger = LoggerFactory.getLogger(UserService.class);
+public class UserService {
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -48,31 +41,31 @@ public class UserService implements UserDetailsService {
 	
 	@Transactional(readOnly = true)
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
-		Page<User> list = repository.findAll(pageable);
+		Page<UserEntity> list = repository.findAll(pageable);
 		return list.map(x -> new UserDTO(x));
 	}
 	
 	@Transactional(readOnly = true)
 	public UserDTO findById(Long id) {
-		Optional<User> obj = repository.findById(id);
-		User entity = obj.orElseThrow(() -> new ControllerNotFoundException("Usuário não encontrada"));
+		Optional<UserEntity> obj = repository.findById(id);
+		UserEntity entity = obj.orElseThrow(() -> new ControllerNotFoundException("Usuário não encontrada"));
 		return new UserDTO(entity);
 	}
 
 	@Transactional
 	public UserDTO insert(UserInsertDTO dto) {
-		User entity = new User();
-		copyDtoToEntity(dto, entity);
-		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-		entity = repository.save(entity);
-		cartService.newCart(entity);
-		return new UserDTO(entity);
+		UserEntity user = new UserEntity();
+		copyDtoToEntity(dto, user);
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		user = repository.save(user);
+		cartService.newCart(user);
+		return new UserDTO(user);
 	}
 
 	@Transactional
 	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
-			User entity = repository.getReferenceById(id);
+			UserEntity entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new UserDTO(entity);
@@ -97,11 +90,11 @@ public class UserService implements UserDetailsService {
 		
 	}
 	
-	private void copyDtoToEntity(UserDTO dto, User entity) {
+	private void copyDtoToEntity(UserDTO dto, UserEntity entity) {
 		
 		entity.setFirstName(dto.getFirstName());
 		entity.setLastName(dto.getLastName());
-		entity.setEmail(dto.getEmail());
+		entity.setUsername(dto.getUsername());
 		
 		entity.getRoles().clear();
 		
@@ -112,15 +105,4 @@ public class UserService implements UserDetailsService {
 		
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = repository.findByEmail(username);
-		if (user == null) {
-			logger.error("Usuário não encontrado: " + username);
-			throw new UsernameNotFoundException("Email não encontrado");
-		}
-		logger.info("Usuário encontrado: " + username);
-		return user;
-	}
-	
 }
