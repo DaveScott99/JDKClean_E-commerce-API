@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.jdkclean.jdkcommerce.controllers.exceptions.FieldMessage;
 import com.jdkclean.jdkcommerce.dto.UserUpdateDTO;
-import com.jdkclean.jdkcommerce.entities.UserEntity;
+import com.jdkclean.jdkcommerce.entities.User;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
 public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid, UserUpdateDTO> {
 	
@@ -39,7 +39,7 @@ public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid,
 		
 		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
 		
-		UserEntity user = userRepository.findByUsername(dto.getUsername());
+		User user = userRepository.findByEmail(dto.getEmail());
 		if (user != null && userId != user.getId()) {
 			list.add(new FieldMessage("username", "Username já existe"));
 		}

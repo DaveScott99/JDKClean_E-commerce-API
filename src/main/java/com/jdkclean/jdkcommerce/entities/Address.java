@@ -3,7 +3,7 @@ package com.jdkclean.jdkcommerce.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 
 @Embeddable
 public class Address implements Serializable {

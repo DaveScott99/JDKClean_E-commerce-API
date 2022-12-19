@@ -3,15 +3,15 @@ package com.jdkclean.jdkcommerce.services.validation;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jdkclean.jdkcommerce.controllers.exceptions.FieldMessage;
 import com.jdkclean.jdkcommerce.dto.UserInsertDTO;
-import com.jdkclean.jdkcommerce.entities.UserEntity;
+import com.jdkclean.jdkcommerce.entities.User;
 import com.jdkclean.jdkcommerce.repositories.UserRepository;
-
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 	
@@ -29,7 +29,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 		
 		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
 		
-		UserEntity user = userRepository.findByUsername(dto.getUsername());
+		User user = userRepository.findByEmail(dto.getEmail());
 		if (user != null) {
 			list.add(new FieldMessage("username", "Username já existe"));
 		}

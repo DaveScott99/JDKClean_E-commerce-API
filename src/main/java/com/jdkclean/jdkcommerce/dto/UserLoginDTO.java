@@ -1,6 +1,6 @@
 package com.jdkclean.jdkcommerce.dto;
 
-import com.jdkclean.jdkcommerce.entities.UserEntity;
+import com.jdkclean.jdkcommerce.entities.User;
 
 public class UserLoginDTO {
 
@@ -19,7 +19,7 @@ public class UserLoginDTO {
 		this.username = username;
 	}
 	
-	public UserLoginDTO(UserEntity entity) {
+	public UserLoginDTO(User entity) {
 		id = entity.getId();
 		firstName = entity.getFirstName();
 		lastName = entity.getLastName();

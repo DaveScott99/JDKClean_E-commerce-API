@@ -2,6 +2,8 @@ package com.jdkclean.jdkcommerce.controllers;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,8 +22,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.jdkclean.jdkcommerce.dto.ProductDTO;
 import com.jdkclean.jdkcommerce.services.ProductService;
-
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/products")

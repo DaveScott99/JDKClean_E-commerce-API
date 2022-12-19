@@ -9,19 +9,19 @@ public class RoleDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private String name;
+	private String authority;
 	
 	public RoleDTO() {
 	}
 
-	public RoleDTO(Long id, String name) {
+	public RoleDTO(Long id, String authority) {
 		this.id = id;
-		this.name = name;
+		this.authority = authority;
 	}
 	
 	public RoleDTO(Role role) {
 		id = role.getId();
-		name = role.getName();
+		authority = role.getAuthority();
 	}
 
 	public Long getId() {
@@ -32,12 +32,12 @@ public class RoleDTO implements Serializable {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getAuthority() {
+		return authority;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAuthority(String authority) {
+		this.authority = authority;
 	}
 	
 }

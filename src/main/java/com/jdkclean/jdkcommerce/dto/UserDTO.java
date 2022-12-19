@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.jdkclean.jdkcommerce.entities.UserEntity;
+import javax.validation.constraints.NotBlank;
 
-import jakarta.validation.constraints.NotBlank;
+import com.jdkclean.jdkcommerce.entities.User;
 
 public class UserDTO implements Serializable {
 
@@ -20,27 +20,27 @@ public class UserDTO implements Serializable {
 	private String firstName;
 	private String lastName;
 
-	private String username;
+	private String email;
 	
-	List<RoleDTO> roles = new ArrayList<>();
+	Set<RoleDTO> roles = new HashSet<>();
 	
 	Set<CartDTO> carts = new HashSet<>();
 	
 	public UserDTO() {
 	}
 
-	public UserDTO(Long id, String firstName, String lastName, String username) {
+	public UserDTO(Long id, String firstName, String lastName, String email) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.username = username;
+		this.email = email;
 	}
 	
-	public UserDTO(UserEntity entity) {
+	public UserDTO(User entity) {
 		id = entity.getId();
 		firstName = entity.getFirstName();
 		lastName = entity.getLastName();
-		username = entity.getUsername();
+		email = entity.getEmail();
 		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
 		entity.getCarts().forEach(cart -> this.carts.add(new CartDTO(cart)));
 	}
@@ -69,15 +69,15 @@ public class UserDTO implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public List<RoleDTO> getRoles() {
+	public Set<RoleDTO> getRoles() {
 		return roles;
 	}
 

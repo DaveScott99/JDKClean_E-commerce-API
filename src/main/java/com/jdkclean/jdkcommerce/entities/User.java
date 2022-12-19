@@ -2,29 +2,36 @@ package com.jdkclean.jdkcommerce.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
 @Entity
 @Table(name = "tb_user")
-public class UserEntity implements Serializable {
+public class User implements UserDetails, Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -35,14 +42,14 @@ public class UserEntity implements Serializable {
 	private String lastName;
 	
 	@Column(unique = true)
-	private String username;
+	private String email;
 	private String password;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "tb_user_role",
 			joinColumns = @JoinColumn(name = "user_id"),
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
-	private List<Role> roles = new ArrayList<>();
+	private Set<Role> roles = new HashSet<>();
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user")
@@ -51,14 +58,14 @@ public class UserEntity implements Serializable {
 	@Embedded
 	private Address address;
 	
-	public UserEntity() {
+	public User() {
 	}
 
-	public UserEntity(Long id, String firstName, String lastName, String username, String password, Address address) {
+	public User(Long id, String firstName, String lastName, String email, String password, Address address) {
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.username = username;
+		this.email = email;
 		this.password = password;
 		this.address = address;
 	}
@@ -87,12 +94,12 @@ public class UserEntity implements Serializable {
 		this.lastName = lastName;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String email) {
-		this.username = email;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -103,7 +110,7 @@ public class UserEntity implements Serializable {
 		this.password = password;
 	}
 
-	public List<Role> getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 	
@@ -132,8 +139,38 @@ public class UserEntity implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserEntity other = (UserEntity) obj;
+		User other = (User) obj;
 		return Objects.equals(id, other.id);
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority())).collect(Collectors.toList());
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 	
 }

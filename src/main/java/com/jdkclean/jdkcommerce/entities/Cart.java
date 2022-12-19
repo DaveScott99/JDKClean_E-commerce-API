@@ -5,18 +5,18 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import com.jdkclean.jdkcommerce.enums.FormPayment;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.jdkclean.jdkcommerce.enums.FormPayment;
 
 @Entity
 @Table(name = "tb_cart")
@@ -32,7 +32,7 @@ public class Cart implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private UserEntity user;
+	private User user;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<Item> items =  new HashSet<>();
@@ -43,7 +43,7 @@ public class Cart implements Serializable {
 	public Cart() {
 	}
 	
-	public Cart(Long id, Double totalValue, boolean close, UserEntity user, FormPayment formPayment) {
+	public Cart(Long id, Double totalValue, boolean close, User user, FormPayment formPayment) {
 		this.id = id;
 		this.totalValue = totalValue;
 		this.close = close;
@@ -75,11 +75,11 @@ public class Cart implements Serializable {
 		this.close = close;
 	}
 
-	public UserEntity getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	public void setUser(UserEntity user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
